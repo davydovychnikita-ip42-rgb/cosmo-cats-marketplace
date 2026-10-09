@@ -1,11 +1,12 @@
 package com.nikita.cosmocats.domain;
 
 import java.util.UUID;
+import java.math.BigDecimal;
 
 public class Product {
     private String id = UUID.randomUUID().toString();
     private String name;
-    private Double price; 
+    private BigDecimal price; 
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
