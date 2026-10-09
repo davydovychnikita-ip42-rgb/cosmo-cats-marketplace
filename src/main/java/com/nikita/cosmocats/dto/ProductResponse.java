@@ -1,3 +1,5 @@
 package com.nikita.cosmocats.dto;
 
-public record ProductResponse(String id, String name, Double price) {}
+import java.math.BigDecimal;
+
+public record ProductResponse(String id, String name, BigDecimal price) {}

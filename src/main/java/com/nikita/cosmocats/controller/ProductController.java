@@ -6,6 +6,7 @@ import com.nikita.cosmocats.dto.ProductCreateRequest;
 import com.nikita.cosmocats.dto.ProductResponse;
 import com.nikita.cosmocats.mapper.ProductMapper;
 import com.nikita.cosmocats.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreateRequest request) {
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest request) {
         Product domain = productMapper.toDomain(request);
         Product saved = productService.createProduct(domain);
         return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toDto(saved));

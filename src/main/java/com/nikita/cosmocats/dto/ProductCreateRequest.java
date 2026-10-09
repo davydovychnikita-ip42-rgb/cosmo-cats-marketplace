@@ -4,6 +4,7 @@ import com.nikita.cosmocats.validation.CosmicWordCheck;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 
 public record ProductCreateRequest(
     @NotNull @Size(min = 3, max = 50)
@@ -11,5 +12,5 @@ public record ProductCreateRequest(
     String name,
     
     @NotNull @Positive
-    Double price 
+    BigDecimal price 
 ) {}
