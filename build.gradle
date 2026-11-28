@@ -19,9 +19,7 @@ ext {
     filesExcludedFromCoverage = [
             "**/*Application.*",
             "**/config/*Configuration.*",
-            "**/domain/Cart.*",
-            "**/domain/Category.*",
-            "**/domain/Order.*"
+            "**/domain/Cart.*"
     ]
 }
 
@@ -40,4 +38,14 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.wiremock:wiremock-jetty12:3.9.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Database & Liquibase
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.liquibase:liquibase-core'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Testcontainers (PostgreSQL in Docker)
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
 }

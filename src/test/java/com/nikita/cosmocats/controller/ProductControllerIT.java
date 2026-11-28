@@ -1,5 +1,8 @@
 package com.nikita.cosmocats.controller;
 
+import com.nikita.cosmocats.TestcontainersConfiguration;
+import org.springframework.context.annotation.Import;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nikita.cosmocats.domain.Product;
 import com.nikita.cosmocats.dto.ProductCreateRequest;
@@ -40,7 +43,7 @@ class ProductControllerIT {
     void createProductShouldReturnCreatedWhenRequestIsValid() throws Exception {
         ProductCreateRequest request = new ProductCreateRequest("Star Catnip", new BigDecimal("25.50"));
         Product saved = new Product();
-        saved.setId("prod-1");
+        saved.setId(1L);
         saved.setName("STAR CATNIP");
         saved.setPrice(new BigDecimal("25.50"));
 
@@ -50,7 +53,7 @@ class ProductControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("prod-1"))
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("STAR CATNIP"))
                 .andExpect(jsonPath("$.price").value(25.50));
     }
@@ -58,7 +61,7 @@ class ProductControllerIT {
     @Test
     void getProductsShouldReturnPagedResponse() throws Exception {
         Product product = new Product();
-        product.setId("prod-1");
+        product.setId(1L);
         product.setName("COMET BED");
         product.setPrice(new BigDecimal("120.00"));
 
@@ -69,7 +72,7 @@ class ProductControllerIT {
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value("prod-1"))
+                .andExpect(jsonPath("$.content[0].id").value("1"))
                 .andExpect(jsonPath("$.content[0].name").value("COMET BED"))
                 .andExpect(jsonPath("$.page").value(0))
                 .andExpect(jsonPath("$.size").value(10))

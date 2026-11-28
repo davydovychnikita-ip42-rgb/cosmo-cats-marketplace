@@ -19,7 +19,7 @@ class ProductMapperTest {
 
         Product domain = mapper.toDomain(request);
 
-        assertNotNull(domain.getId());
+        org.junit.jupiter.api.Assertions.assertNull(domain.getId());
         assertEquals("SPACE HELMET", domain.getName());
         assertEquals(new BigDecimal("99.50"), domain.getPrice());
     }
@@ -27,13 +27,13 @@ class ProductMapperTest {
     @Test
     void toDtoShouldMapAllFields() {
         Product product = new Product();
-        product.setId("test-id-1");
+        product.setId(1L);
         product.setName("COMET LASER");
         product.setPrice(new BigDecimal("45.00"));
 
         ProductResponse response = mapper.toDto(product);
 
-        assertEquals("test-id-1", response.id());
+        assertEquals("1", response.id());
         assertEquals("COMET LASER", response.name());
         assertEquals(new BigDecimal("45.00"), response.price());
     }

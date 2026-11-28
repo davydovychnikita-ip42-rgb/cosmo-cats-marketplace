@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
     public ProductResponse toDto(Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+        return new ProductResponse((product.getId() != null ? product.getId().toString() : null), product.getName(), product.getPrice());
     }
 
     public Product toDomain(ProductCreateRequest dto) {

@@ -1,30 +1,45 @@
 package com.nikita.cosmocats.service;
 
 import com.nikita.cosmocats.domain.Product;
+import com.nikita.cosmocats.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class ProductService {
-    private final Map<String, Product> productDatabase = new ConcurrentHashMap<>();
 
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Transactional
     public Product createProduct(Product product) {
-        productDatabase.put(product.getId(), product);
-        return product;
+        return productRepository.save(product);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> getAllProducts(int page, int size) {
-        return productDatabase.values().stream()
-                .skip((long) page * size)
-                .limit(size)
-                .collect(Collectors.toList());
+        return productRepository.findAll(PageRequest.of(page, size)).getContent();
     }
-    
-    public long count() { 
-        return productDatabase.size(); 
+
+    @Transactional(readOnly = true)
+    public long count() {
+        return productRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
     }
 }

@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-unique-constraints
+      author: nikita
+      changes:
+        - addUniqueConstraint:
+            tableName: products
+            columnNames: name, category_id
+            constraintName: uq_products_name_category
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: name
+            constraintName: uq_categories_name
+        - addUniqueConstraint:
+            tableName: orders
+            columnNames: order_number
+            constraintName: uq_orders_order_number
+
+  - changeSet:
+      id: 004-add-indexes
+      author: nikita
+      changes:
+        - createIndex:
+            tableName: products
+            indexName: idx_products_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_customer_email
+            columns:
+              - column:
+                  name: customer_email

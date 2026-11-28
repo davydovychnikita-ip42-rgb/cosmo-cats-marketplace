@@ -1,59 +1,73 @@
 package com.nikita.cosmocats.service;
 
 import com.nikita.cosmocats.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import com.nikita.cosmocats.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    private ProductService productService;
+    @Mock
+    private ProductRepository productRepository;
 
-    @BeforeEach
-    void setUp() {
-        productService = new ProductService();
-    }
+    @InjectMocks
+    private ProductService productService;
 
     @Test
     void createProductShouldSaveAndReturnProduct() {
-        Product product = new Product();
-        product.setName("STAR CATNIP");
-        product.setPrice(new BigDecimal("19.99"));
+        Product product = new Product("Star Catnip", BigDecimal.valueOf(19.99), null);
+        when(productRepository.save(product)).thenReturn(product);
 
         Product saved = productService.createProduct(product);
 
-        assertNotNull(saved.getId());
-        assertEquals("STAR CATNIP", saved.getName());
-        assertEquals(new BigDecimal("19.99"), saved.getPrice());
-        assertEquals(1L, productService.count());
+        assertThat(saved.getName()).isEqualTo("Star Catnip");
+        verify(productRepository).save(product);
     }
 
     @Test
     void getAllProductsShouldReturnPagedResults() {
-        for (int i = 1; i <= 5; i++) {
-            Product product = new Product();
-            product.setName("GALAXY TOY " + i);
-            product.setPrice(BigDecimal.valueOf(10L * i));
-            productService.createProduct(product);
-        }
+        Product product = new Product("Galaxy Toy", BigDecimal.valueOf(9.99), null);
+        when(productRepository.findAll(PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(product)));
 
-        List<Product> firstPage = productService.getAllProducts(0, 2);
-        List<Product> secondPage = productService.getAllProducts(1, 2);
-        List<Product> lastPage = productService.getAllProducts(2, 2);
-        List<Product> emptyPage = productService.getAllProducts(5, 2);
+        List<Product> result = productService.getAllProducts(0, 10);
 
-        assertEquals(2, firstPage.size());
-        assertEquals(2, secondPage.size());
-        assertEquals(1, lastPage.size());
-        assertTrue(emptyPage.isEmpty());
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getName()).isEqualTo("Galaxy Toy");
     }
 
     @Test
-    void countShouldReturnZeroWhenDatabaseIsEmpty() {
-        assertEquals(0L, productService.count());
+    void countShouldReturnRepositoryCount() {
+        when(productRepository.count()).thenReturn(5L);
+
+        assertThat(productService.count()).isEqualTo(5L);
+    }
+
+    @Test
+    void findByIdShouldReturnProduct() {
+        Product product = new Product("Comet Laser", BigDecimal.valueOf(15.00), null);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        assertThat(productService.findById(1L)).isPresent();
+    }
+
+    @Test
+    void deleteByIdShouldCallRepository() {
+        productService.deleteById(1L);
+
+        verify(productRepository).deleteById(1L);
     }
 }
